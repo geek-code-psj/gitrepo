@@ -1,0 +1,5 @@
+{
+  "name": "Repo Ready",
+  "description": "An application that takes a public GitHub repository URL, analyzes its tech stack, and generates a downloadable zip file with detailed setup instructions and a technology overview.",
+  "requestFramePermissions": []
+}
