@@ -4,6 +4,7 @@ import DownloadIcon from './icons/DownloadIcon';
 import GithubIcon from './icons/GithubIcon';
 import RocketLaunchIcon from './icons/RocketLaunchIcon';
 import BookOpenIcon from './icons/BookOpenIcon';
+import WebContainerDemo from './WebContainerDemo';
 
 interface ResultsDisplayProps {
   result: AnalysisResult;
@@ -28,14 +29,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, repoUrl }) => {
   const { owner, repoName, path } = getRepoInfo();
   const stackblitzUrl = `https://stackblitz.com/github/${owner}/${repoName}`;
   const replitUrl = `https://replit.com/github/${owner}/${repoName}`;
-  // Use HEAD which always points to the default branch, making the link resilient to incorrect branch name detection.
   const repoZipUrl = `https://github.com/${owner}/${repoName}/archive/HEAD.zip`;
-  const preparedFilename = `${repoName}-main.zip`; // Use a consistent filename
+  const preparedFilename = `${repoName}-main.zip`;
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(result.setupInstructions).then(() => {
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+        setTimeout(() => setCopied(false), 2000);
     }).catch(err => {
         console.error('Failed to copy text: ', err);
         alert('Failed to copy instructions. Please copy them manually.');
@@ -81,29 +81,30 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result, repoUrl }) => {
             </a>
         </div>
 
-        {/* Demo Section */}
+        {/* In-Browser Demo or Cloud IDE Section */}
         <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-700 flex flex-col text-center">
-            <RocketLaunchIcon className="w-10 h-10 text-teal-400 mb-4 mx-auto" />
-            <h3 className="font-semibold text-white text-xl mb-2">Run in a Demo Environment</h3>
-            <p className="text-sm text-gray-400 mb-6">
-                Open this repository in a cloud-based development environment to run it without any local setup.
-            </p>
-            <div className="space-y-3 mt-auto">
-                 <a href={stackblitzUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
-                    <RocketLaunchIcon className="w-4 h-4" /> Open in StackBlitz
-                </a>
-                 <a href={replitUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
-                    <RocketLaunchIcon className="w-4 h-4" /> Open in Replit
-                </a>
-                <a href={repoUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
-                    <GithubIcon className="w-4 h-4" /> View on GitHub
-                </a>
-            </div>
-             <div className="mt-4 text-left p-3 bg-gray-800/50 rounded-md border border-gray-700">
-                <p className="text-xs text-gray-400">
-                    <strong className="text-gray-300">Why not a demo in this app?</strong> For security and technical reasons, web browsers cannot create a full development environment to run complex applications. Services like StackBlitz provide a secure, sandboxed environment that perfectly replicates a local setup.
-                </p>
-            </div>
+             {result.isNodeProject ? (
+                <WebContainerDemo repoUrl={repoUrl} />
+            ) : (
+                <>
+                    <RocketLaunchIcon className="w-10 h-10 text-teal-400 mb-4 mx-auto" />
+                    <h3 className="font-semibold text-white text-xl mb-2">Launch in a Cloud IDE</h3>
+                    <p className="text-sm text-gray-400 mb-6 flex-grow">
+                        This project type is not supported for an in-browser demo. You can run it instantly in a full-featured, browser-based development environment using one of these services.
+                    </p>
+                    <div className="space-y-3 mt-auto">
+                         <a href={stackblitzUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                            <RocketLaunchIcon className="w-4 h-4" /> Open in StackBlitz
+                        </a>
+                         <a href={replitUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                            <RocketLaunchIcon className="w-4 h-4" /> Open in Replit
+                        </a>
+                        <a href={repoUrl} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                            <GithubIcon className="w-4 h-4" /> View on GitHub
+                        </a>
+                    </div>
+                </>
+            )}
         </div>
       </div>
     </div>
